@@ -24,6 +24,12 @@
     2.计算每个子账号在SNS Swap容器里的子地址，然后从主账号转ICP到相应的Swap子地址中，这一步就参与了Swap
     3.每个子账号去主动刷新在SNS Swap容器中的余额，成功后就投票成功了
 
+### 需要的环境
+    根据指示下载node
+    https://nodejs.org/en/download/
+
+![alt text](image-4.png)
+
 ### 参与Swap
 `
 node src/main.js
