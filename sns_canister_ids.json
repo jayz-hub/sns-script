@@ -1,0 +1,17 @@
+{
+    "root_canister_id": [
+        "cj5nf-5yaaa-aaaaq-aacxq-cai"
+    ],
+    "governance_canister_id": [
+        "auadn-oqaaa-aaaaq-aacya-cai"
+    ],
+    "index_canister_id": [
+        "a5dir-yyaaa-aaaaq-aaczq-cai"
+    ],
+    "swap_canister_id": [
+        "a2cof-vaaaa-aaaaq-aacza-cai"
+    ],
+    "ledger_canister_id": [
+        "atbfz-diaaa-aaaaq-aacyq-cai"
+    ]
+}
