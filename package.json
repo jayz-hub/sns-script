@@ -16,13 +16,14 @@
     "@dfinity/candid": "^0.12.0",
     "@dfinity/identity": "^0.12.0",
     "@dfinity/principal": "^0.12.0",
+    "bignumber.js": "^9.1.2",
     "bip39": "^3.0.4",
     "crc": "^3.8.0",
+    "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "hdkey": "^2.0.1",
     "js-sha256": "^0.9.0",
     "node-fetch": "^2.6.1",
-    "dotenv": "^16.4.5",
     "secp256k1": "^4.0.2"
   }
 }

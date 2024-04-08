@@ -2,6 +2,7 @@ const {SwapActor} = require("./ic/icAgent.js");
 const {getAccountCredentials} = require("./converter.js");
 const {MNEMONIC,NUM_PARTICIPANTS,ICP_PER_PARTICIPANT,YUKU_SWAP_CANISTER} = require("../config.js");
 const  fs = require('fs');
+const BigNumber = require('bignumber.js');
 
 async function main() {
     var strs = "principal,amount\r\n";
@@ -13,7 +14,7 @@ async function main() {
         });
         console.log(state);
         if(state.buyer_state && state.buyer_state[0].icp) {
-            let amount = state.buyer_state[0].icp[0].amount_e8s/100000000n;
+            let amount = new BigNumber(state.buyer_state[0].icp[0].amount_e8s).dividedBy(1e8).toNumber();
             strs = strs + user.getPrincipal().toString() + ","+ amount.toString() + "\r\n";
         }
     }
