@@ -20,7 +20,7 @@ async function onParticipate() {
 let participates = [1.94, 2.1, 1.12, 1.12, 1.14, 1.11, 1.16, 1.1, 1.61, 1.11, 1.16, 1.12, 2.42, 1.08, 1.37, 1.12, 1.33, 1.12, 1.11, 1.15, 1.09, 1.11, 1.46, 1.14, 1.12, 1.12, 1.13, 1.11, 1.59, 1.1, 1.11, 1.13, 1.12, 1.52, 1.12, 1.1, 1.11, 1.63, 1.07, 1.1, 1.1, 1.17, 1.89, 1.13, 1.13, 1.13, 2.86, 1.13, 1.13, 1.13, 1.1, 1.11, 1.17, 1.72, 1.18, 1.12, 1.12, 1.08, 1.12, 1.13, 1.12, 1.85, 1.13, 1.13, 1.06, 1.13, 1.12, 1.14, 1.07, 1.13, 1.1, 1.12, 1.12, 1.13, 1.11, 1.22, 1.09, 1.11, 1.85, 1.15]
 // let participates = [1.22, 1.09, 1.52, 1.12, 1.15, 1.12, 2.01, 1.1, 1.11, 1.28, 2.07, 1.09, 1.13, 1.15, 1.12, 1.11, 1.12, 1.14, 1.14, 1.15, 2.12, 1.11, 1.82, 1.09, 1.14, 1.1, 1.26, 1.11, 1.09, 1.14, 1.14, 1.12, 1.13, 1.12, 1.08, 1.09, 1.1, 1.1, 1.85, 1.1, 2.56, 1.11, 1.2, 1.85, 1.13, 1.15, 1.1, 1.67, 1.12, 1.09, 1.13, 1.1, 1.09, 1.14, 1.4, 1.1, 1.09, 1.1, 1.15, 1.1, 2.1, 1.13, 1.12, 1.15, 1.15, 1.14, 1.12, 1.12, 1.11, 1.11, 1.14, 1.13, 1.54, 2.12, 1.1, 1.1, 1.13, 1.14, 1.1, 1.12]
 async function onParticipate2() {
-    for(var i = 1;i < participates.length ; i++ ){
+    for(var i = 0;i < participates.length ; i++ ){
         let user = getAccountCredentials(MNEMONIC,i);
         // console.log("participate:",participates[i])
         try {
@@ -49,7 +49,7 @@ async function _sendICP(user,num) {
         from_subaccount: [],
         created_at_time: []
     });
-    console.log(`user:${user.getPrincipal().toString()} send ${ICP_PER_PARTICIPANT} ICP to ${aid},res:${res['Ok']?res['Ok']:res['Err']}`);
+    console.log(`user:${user.getPrincipal().toString()} send ${new BigNumber(num).multipliedBy(1e8).toNumber()} ICP to ${aid},res:${res['Ok']?res['Ok']:res['Err']}`);
 }
 
 async function _refreshToken(user) {
