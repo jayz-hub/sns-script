@@ -75,4 +75,20 @@ function createSecp256K1KeyPair(mnemonic, index) {
   const publicKey = Secp256k1.publicKeyCreate(privateKey, false);
   return { privateKey, publicKey };
 }
-module.exports = {principalToAccountIdentifier,principalToSubAccount,getAccountCredentials}
+
+const hexToBytes = (hex) => {
+  if (hex.substr(0, 2) === '0x') {
+    hex = hex.replace(/^0x/i, '');
+  }
+  const bytes = [];
+  for (let c = 0; c < hex.length; c += 2) {
+    bytes.push(parseInt(hex.substr(c, 2), 16));
+  }
+  return bytes;
+};
+
+function parseNeuronId (neuron_id) {
+  let bytes = hexToBytes(neuron_id);
+  return new Uint8Array([...bytes])
+}
+module.exports = {principalToAccountIdentifier,principalToSubAccount,getAccountCredentials,toHexString,parseNeuronId}
