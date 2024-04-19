@@ -1,8 +1,10 @@
 const { Principal } = require("@dfinity/principal");
 const {GovernanceActor} = require("./ic/icAgent.js");
-const {getAccountCredentials} = require("./converter.js");
-const {MNEMONIC,NUM_PARTICIPANTS} = require("../config.js");
-
+const {getAccountCredentials,principalToSubAccount} = require("./converter.js");
+const {MNEMONIC,YUKU_ICP_POOL_CANISTER,YUKU_GOVERNANCE_CANISTER} = require("../config.js");
+const TRANSFER_FROM_ICP_TREASURY = 1;//划转ICP
+const TRANSFER_FROM_SNS_TOKEN_TREASURY = 2;//划转Token
+const YUKU_ICP_POOL_CANISTER_SUBACCOUNT = principalToSubAccount(Principal.fromText(YUKU_GOVERNANCE_CANISTER));
 const GOVERNANCE_ACTOR = GovernanceActor();
 
 async function getNeuronId(p) {
@@ -14,8 +16,6 @@ async function getNeuronId(p) {
     return neurons.neurons[0].id[0];
 }
 
-const TRANSFER_FROM_ICP_TREASURY = 1;
-const TRANSFER_FROM_SNS_TOKEN_TREASURY = 2;
 async function transfer(user,to,amount,from_treasury) {
     let neuron_id = await getNeuronId(user.getPrincipal().toString());
     console.log("neuron_id",neuron_id)
@@ -40,8 +40,62 @@ async function transfer(user,to,amount,from_treasury) {
       }],
       "subaccount":neuron_id.id
     });
+    console.log(result.command[0]['Ok']);
     console.log(result.command[0]['Error']);
 }
+
+async function transferICPToICPSwapPool(user){
+    let neuron_id = await getNeuronId(user.getPrincipal().toString());
+    const governance_actor = GovernanceActor(user);
+    let result = await governance_actor.manage_neuron({
+        "command": [{
+          "MakeProposal": {
+              'url':"",
+              "title": `Transfer ${token} from SNS treasury`,
+              "action": [{
+                  "TransferSnsTreasuryFunds": {
+                      'from_treasury' : from_treasury,
+                      'to_principal' : [Principal.fromText(YUKU_ICP_POOL_CANISTER)],
+                      'to_subaccount' : [YUKU_ICP_POOL_CANISTER_SUBACCOUNT],
+                      'memo' : [],
+                      'amount_e8s' : amount * 1e8,
+                  }
+              }],
+              "summary": `Transfer ${amount} ${token} to team wallet`
+          }
+        }],
+        "subaccount":neuron_id.id
+      });
+      console.log(result.command[0]['Ok']);
+      console.log(result.command[0]['Error']);
+}
+
+async function transferYukuToICPSwapPool(user){
+    let neuron_id = await getNeuronId(user.getPrincipal().toString());
+    const governance_actor = GovernanceActor(user);
+    let result = await governance_actor.manage_neuron({
+        "command": [{
+          "MakeProposal": {
+              'url':"",
+              "title": `Transfer ${token} from SNS treasury`,
+              "action": [{
+                  "TransferSnsTreasuryFunds": {
+                      'from_treasury' : TRANSFER_FROM_SNS_TOKEN_TREASURY,
+                      'to_principal' : [Principal.fromText(YUKU_ICP_POOL_CANISTER)],
+                      'to_subaccount' : [YUKU_ICP_POOL_CANISTER_SUBACCOUNT],
+                      'memo' : [],
+                      'amount_e8s' : amount * 1e8,
+                  }
+              }],
+              "summary": `Transfer ${amount} ${token} to team wallet`
+          }
+        }],
+        "subaccount":neuron_id.id
+      });
+      console.log(result.command[0]['Ok']);
+      console.log(result.command[0]['Error']);
+}
+
 
 async function main() {
     const to = Principal.fromText("");

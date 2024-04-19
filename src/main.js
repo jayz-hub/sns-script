@@ -1,5 +1,5 @@
 const { Principal } = require("@dfinity/principal");
-const {principalToSubAccount,getAccountCredentials} = require("./converter.js");
+const {principalToSubAccount,getAccountCredentials,principalToAccountIdentifier} = require("./converter.js");
 const {LedgerActor,SwapActor} = require("./ic/icAgent.js");
 const {MNEMONIC,NUM_PARTICIPANTS,ICP_PER_PARTICIPANT,YUKU_SWAP_CANISTER} = require("../config.js");
 
