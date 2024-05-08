@@ -10,13 +10,15 @@ async function transfer(proposer,to) {
         "limit": 100,
         "start_page_at": [],
     });
-    console.log("neurons:",neurons.neurons);
     for(let i = 0 ;i<neurons.neurons.length; i++){
         const neuron = neurons.neurons[i];
         const neuron_id = neuron.id[0].id;
         const maturity_e8s_equivalent = neuron.maturity_e8s_equivalent;
         if(maturity_e8s_equivalent > 0){
-            await disburse(proposer,neuron_id,maturity_e8s_equivalent,to);
+            await disburseMaturity(proposer,neuron_id,maturity_e8s_equivalent,to);
+        }
+        if(neuron.dissolve_state && neuron.dissolve_state[0].DissolveDelaySeconds > 0){
+            continue //还在溶解
         }
         const amount = neuron.cached_neuron_stake_e8s;
         await disburse(proposer,neuron_id,amount,to);
@@ -33,7 +35,19 @@ async function disburse(proposer,neuron_id,amount,to) {
             'amount': [{'e8s': amount}]
         }
     }
-    // return 
+    await makeProposal(proposer,command,neuron_id);
+}
+
+async function disburseMaturity(proposer,neuron_id,amount,to) {
+    const command = {
+        "DisburseMaturity": {
+            'to_account': [{
+                'owner': [Principal.fromText(to)],
+                'subaccount': [],
+            }],
+            'percentage_to_disburse': 100,
+        }
+    }
     await makeProposal(proposer,command,neuron_id);
 }
 
