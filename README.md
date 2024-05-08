@@ -46,5 +46,10 @@ node src/check.js
 node src/export.js
 `
 
-### 后续功能
-把所有子账号代币转移到主账号中
+### 划转神经元到某个账号
+
+config.js中的NUM_PARTICIPANTSL，子账号数量
+config.js中的TRANSFER_TO_PRINCIPAL，想要提取到的账号，找武总提供
+`
+node src/transfer.js
+`
