@@ -10,20 +10,30 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@choptop/haw": "^0.0.8",
     "@dfinity/agent": "^0.12.0",
     "@dfinity/auth-client": "^0.12.0",
     "@dfinity/authentication": "^0.12.0",
     "@dfinity/candid": "^0.12.0",
     "@dfinity/identity": "^0.12.0",
     "@dfinity/principal": "^0.12.0",
+    "@web3-storage/w3up-client": "^16.4.0",
     "bignumber.js": "^9.1.2",
     "bip39": "^3.0.4",
+    "buffer-crc32": "^1.0.0",
     "crc": "^3.8.0",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "hdkey": "^2.0.1",
     "js-sha256": "^0.9.0",
-    "node-fetch": "^2.6.1",
-    "secp256k1": "^4.0.2"
+    "mime": "^4.0.4",
+    "nft.storage": "^7.2.0",
+    "node-fetch": "^2.7.0",
+    "node-telegram-bot-api": "^0.66.0",
+    "secp256k1": "^4.0.2",
+    "web3.storage": "^4.5.5",
+    "xlsx": "^0.18.5"
   }
 }

@@ -1,9 +1,12 @@
 const crc = require('crc');
 const bip39 = require("bip39");
 const HDKey = require("hdkey");
+const CryptoJS = require("crypto-js");
 const Secp256k1 = require("secp256k1");
 const { sha224 } = require('js-sha256')
 const {Secp256k1KeyIdentity} = require("@dfinity/identity");
+// import {array2hex } from '@choptop/haw';
+const {Ed25519KeyIdentity} = require("@dfinity/identity");
 
 const principalToSubAccount = (principal) => {
     const bytes = principal.toUint8Array();
@@ -76,6 +79,14 @@ function createSecp256K1KeyPair(mnemonic, index) {
   return { privateKey, publicKey };
 }
 
+function createEd25519KeyPair(mnemonic, index) {
+  var seed = bip39.mnemonicToSeedSync(mnemonic);
+  seed = seed.slice(0,32)
+  const keyPair = Ed25519.MakeKeypair(seed);
+  console.log("keyPair:privateKey:",array2hex(keyPair.privateKey))
+  return Ed25519KeyIdentity.fromKeyPair(keyPair.publicKey,keyPair.privateKey);
+}
+
 const hexToBytes = (hex) => {
   if (hex.substr(0, 2) === '0x') {
     hex = hex.replace(/^0x/i, '');
@@ -91,4 +102,54 @@ function parseNeuronId (neuron_id) {
   let bytes = hexToBytes(neuron_id);
   return new Uint8Array([...bytes])
 }
-module.exports = {principalToAccountIdentifier,principalToSubAccount,getAccountCredentials,toHexString,parseNeuronId}
+
+function getAccountId(principal, subAccount) {
+  const sha = CryptoJS.algo.SHA224.create();
+  sha.update(ACCOUNT_DOMAIN_SEPERATOR); // Internally parsed with UTF-8, like go does
+  sha.update(byteArrayToWordArray(principal.toUint8Array()));
+  const subBuffer = Buffer.from(SUB_ACCOUNT_ZERO);
+  if (subAccount) {
+    subBuffer.writeUInt32BE(subAccount);
+  }
+  sha.update(byteArrayToWordArray(subBuffer));
+  const hash = sha.finalize();
+
+  /// While this is backed by an array of length 28, it's canonical representation
+  /// is a hex string of length 64. The first 8 characters are the CRC-32 encoded
+  /// hash of the following 56 characters of hex. Both, upper and lower case
+  /// characters are valid in the input string and can even be mixed.
+  /// [ic/rs/rosetta-api/ledger_canister/src/account_identifier.rs]
+  const byteArray = wordArrayToByteArray(hash, 28);
+  const checksum = generateChecksum(byteArray);
+  const val = checksum + hash.toString();
+
+  return val;
+}
+function byteArrayToWordArray (byteArray)  {
+  const wordArray = [];
+  let i;
+  for (i = 0; i < byteArray.length; i += 1) {
+      wordArray[(i / 4) | 0] |= byteArray[i] << (24 - 8 * i);
+  }
+  // eslint-disable-next-line
+  const result = CryptoJS.lib.WordArray.create(
+      wordArray,
+      byteArray.length
+  );
+  return result;
+};
+const crc32 = require('buffer-crc32');
+function generateChecksum (hash) {
+  const crc = crc32.unsigned(Buffer.from(hash));
+  const hex = intToHex(crc);
+  return hex.padStart(8, '0');
+};
+function intToHex (val) {
+  return val < 0 ? (Number(val) >>> 0).toString(16) : Number(val).toString(16);
+}
+
+function ab2str (buf) {
+  const decoder = new TextDecoder()
+  return decoder.decode(Buffer.from(buf))
+}
+module.exports = {principalToAccountIdentifier,principalToSubAccount,getAccountCredentials,toHexString,parseNeuronId,getAccountId,createEd25519KeyPair,ab2str}

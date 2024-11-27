@@ -1,8 +1,7 @@
 const { Principal } = require("@dfinity/principal");
-const {principalToSubAccount,getAccountCredentials,principalToAccountIdentifier} = require("./converter.js");
+const {principalToSubAccount,getAccountCredentials,principalToAccountIdentifier,createEd25519KeyPair} = require("./converter.js");
 const {LedgerActor,SwapActor} = require("./ic/icAgent.js");
 const {MNEMONIC,NUM_PARTICIPANTS,ICP_PER_PARTICIPANT,YUKU_SWAP_CANISTER} = require("../config.js");
-
 //修改助记词。参与数量。每个参与账号的ICP数量来控制脚本
 const MAIN_USER = getAccountCredentials(MNEMONIC,0);
 
@@ -48,7 +47,21 @@ async function _refreshToken(user) {
 }
 
 async function main() {
-    await onParticipate()
+    // await onParticipate()
+    // createEd25519KeyPair("soldier unaware super few truck artefact bright tuna treat asset mountain unfold",0)
+    const crypto = require('crypto');  
+
+    // 生成32字节的随机私钥  
+    const generatePrivateKey = () => {  
+        return crypto.randomBytes(32).toString('hex');  
+    };  
+
+    // 输出身份私钥  
+    const privateKey = generatePrivateKey();  
+    console.log(`身份私钥 (hex): ${privateKey}`);  
+
+    // let identity = Ed25519KeyIdentity.fromSecretKey(new Uint8Array(hex2array(privateKey)));
+    // console.log(identity.getPrincipal().toText())
 }
 
   main();

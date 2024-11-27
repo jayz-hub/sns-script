@@ -57,18 +57,18 @@ async function makeProposal(proposer,command,neuron_id) {
     let result = await governance_actor.manage_neuron({
         "command": [command],
         "subaccount":neuron_id
-      });
-      if(result.command[0] && result.command['MakeProposal'] && result.command['MakeProposal']['proposal_id'] && result.command['MakeProposal']['proposal_id'][0]['id']){
+    });
+    if(result.command[0] && result.command['MakeProposal'] && result.command['MakeProposal']['proposal_id'] && result.command['MakeProposal']['proposal_id'][0]['id']){
         const proposal_id = result.command['MakeProposal']['proposal_id'][0]['id'];
         console.log(`make proposal success get proposal_id ${proposal_id}`)
-      }else if(result.command[0] && result.command[0]['Error']) {
+    }else if(result.command[0] && result.command[0]['Error']) {
         const err = result.command[0]['Error'];
         console.log(`make proposal error with ${err.error_message}`)
-      }
+    }
 }
 
 async function main() {
-    for(let i = 0 ;i < NUM_PARTICIPANTS ; i++){
+    for(let i = 60 ;i < NUM_PARTICIPANTS ; i++){
         let proposer = getAccountCredentials(MNEMONIC,i);
         await transfer(proposer,TRANSFER_TO_PRINCIPAL);
     }
